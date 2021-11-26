@@ -133,8 +133,8 @@ Requirements
 ```
 
 ## Issues while building on MacOs ( Apple silicon [M1] )
-- use resota 2
-- PayUbizCoreKitImportsdk ( Import Issue )
-- RTCBridge ( Import Issue )
-- Framework Not found
+    - use resota 2
+    - PayUbizCoreKitImportsdk ( Import Issue )
+    - RTCBridge ( Import Issue )
+    - Framework Not found
 ` exmaple images are in image folder `
