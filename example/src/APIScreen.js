@@ -121,7 +121,7 @@ const APIScreen = ({ route }) => {
         requestData = {
           ...requestData,
           isSIInfo: '1',
-          cardNumber: '555676',
+          cardNumber: '555555',
           command: GET_BIN_INFO
         }
 
@@ -171,27 +171,15 @@ const APIScreen = ({ route }) => {
 
         requestData = {
           ...requestData,
-          var1: JSON.stringify({
-            "useCase": {
-              "getExtendedPaymentDetails": true,
-              "getTaxSpecification": true,
-              "checkDownStatus": true,
-              "getAdditionalCharges": true,
-
-              // "getOfferDetails": true
-            },
-            "requestId": "1614595430989",
-            "transactionDetails": {
-              "amount": "5000"
-            },
-
-          }),
-          transactionID:"1614595430989",
-          amount: 5000,
-          getExtendedPaymentDetails:true,
-          checkDownStatus:true,
-          checkTaxSpecification:true,
-          checkAdditionalCharges:true,
+          var1: JSON.stringify({"useCase":
+          {"getExtendedPaymentDetails":true,
+          "getTaxSpecification":true,
+          "checkDownStatus":true,
+          "getAdditionalCharges":true},
+          "requestId":"211219214632",
+          "customerDetails":{"mobile":"9876543210"},
+          "transactionDetails":{"amount":"5000"}
+        }),
           command: GET_CHECKOUT_DETAILS
         }
         const response = await PayUSdk.getCheckoutDetails({
@@ -211,37 +199,36 @@ const APIScreen = ({ route }) => {
           //     command: CHECK_OFFER_DETAILS
           // }
 
-          // requestData = {
-          //         ...requestData,
-          //         offerKey: 'cardOfferKey@8643',
-          //         cardToken: "111bce624e01fb4fde3ea2",
-          //         userCredentials:userCredentials,
-          //         paymentType: 'Saved Cards',
-          //         amount: '5000',
-          //         command: CHECK_OFFER_DETAILS
-          // }
+          requestData = {
+                  ...requestData,
+                  offerKey: 'cardOfferKey@8643',
+                  cardToken: "111bce624e01fb4fde3ea2",
+                  userCredentials:userCredentials,
+                  paymentType: 'Saved Cards',
+                  amount: '5000',
+                  command: CHECK_OFFER_DETAILS
+          }
 
 // only android has
 // main net bankig
 
-          requestData = {
-            ...requestData,
-            offerKey: 'NBOfferKey@8647',
-            bankCode: "AXIB",
-            paymentType: 'NB',
-            amount: '5000',
-            command: CHECK_OFFER_DETAILS
-          }
+          // requestData = {
+          //   ...requestData,
+          //   offerKey: 'cashBackccdcnb@8651',
+          //   bankCode: "AXIB",
+          //   paymentType: 'NB',
+          //   amount: '5000',
+          //   command: CHECK_OFFER_DETAILS
+          // }
 
 //
 //
 
           // requestData = {
           //   ...requestData,
-          //   offerKey: 'NBOfferKey@8647',
-          //   bankCode: "AXIB",
+          //   offerKey: '@7283',
+          //   bankCode: "643567vbhbvgh5678gvv77b",
           //   paymentType: 'Net Banking',
-          //   amount: '5000',
           //   command: CHECK_OFFER_DETAILS
           // }
 
@@ -290,24 +277,23 @@ const APIScreen = ({ route }) => {
         
 
       //  } else if(2) {
-        //  requestData = {
-        //    ...requestData,
-        //      amount: 5000,
-        //      offerKey: 'cardOfferKey@8643',
-        //    cardToken: "643567vbhbvgh5678gvv77b",
-        //    cardNumber: "5123456789012346",
-        //    paymentType: 'Saved Cards',
-        //    command: CHECK_OFFER_STATUS
-        //  }
+      //    requestData = {
+      //      ...requestData,
+      //        amount: 5000,
+      //        offerKey: '@7283',
+      //      cardToken: "643567vbhbvgh5678gvv77b",
+      //      paymentType: 'Saved Cards',
+      //      command: CHECK_OFFER_STATUS
+      //    }
       //  } else {
-          //  requestData = {
-          //    ...requestData,
-          //    amount: 5000,
-          //    offerKey: 'NBOfferKey@8647',
-          //    bankCode: "AXIB",
-          //    paymentType: 'NB',
-          //    command: CHECK_OFFER_STATUS
-          //  }
+      //      requestData = {
+      //        ...requestData,
+      //        amount: 5000,
+      //        offerKey: '@7283',
+      //        bankCode: "643567vbhbvgh5678gvv77b",
+      //        paymentType: 'Net Banking',
+      //        command: CHECK_OFFER_STATUS
+      //      }
       //  }
 
         const response = await PayUSdk.getOfferStatus({
@@ -318,7 +304,7 @@ const APIScreen = ({ route }) => {
         setJsonTextInputValue(JSON.stringify(response));
 
       } else if (feature === 'lookup_api') {
-        const merchantOrderId = "OBE-JU89-13151-11009002";
+        const merchantOrderId = "OBE-JU89-13151-1100900221";
         const currency = "INR";
         const baseAmount = "10000"
 
@@ -412,7 +398,7 @@ const APIScreen = ({ route }) => {
       <View style={{ flex: 1, padding: 16, backgroundColor: '#ccc' }}>
         <Text>JSON Output</Text>
         <ScrollView>
-          <Text style={{ lineHeight: 24, fontSize: 16 }}>{jsonTextInputValue}</Text>
+          <Text style={{ lineHeight: 24, fontSize: 16, maxHeight: 5000}}>{jsonTextInputValue}</Text>
         </ScrollView>
       </View>
     </View>

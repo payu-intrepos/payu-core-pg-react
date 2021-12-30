@@ -13,23 +13,10 @@ import { useIsFocused } from '@react-navigation/native';
 
 const SeamlessScreen = ({ navigation }) => {
   const [merchantKey, setMerchantKey] = useState('3TnMpV');
-  const [salt, setSalt] = useState('g0nGFe03');
+  const [salt, setSalt] = useState('<Please_add_test_salt_here>');
   const [environment, setEnvironment] = useState('Production');
   const [isSandbox, setisSandbox] = useState(false);
   const [userCredentials, setUserCredentials] = useState('umang:arya123');
-
-  // JPM7Fg
-  // const [merchantKey, setMerchantKey] = useState('smsplus');
-  // const [salt, setSalt] = useState('1b1b0');
-  // const [environment, setEnvironment] = useState('Production');
-  // const [isSandbox, setisSandbox] = useState(false);
-  // const [userCredentials, setUserCredentials] = useState('smsplus:test@gmail.com');
-
-  // const [merchantKey, setMerchantKey] = useState('JyErAV');
-  // const [salt, setSalt] = useState('2nqlltas');
-  // const [environment, setEnvironment] = useState('Test');
-  // const [isSandbox, setisSandbox] = useState(true);
-  // const [userCredentials, setUserCredentials] = useState('JyErAV:123');
 
   const [amount, setAmount] = useState('100');
   const [productInfo, setProductInfo] = useState('Mobile Phone');

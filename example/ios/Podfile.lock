@@ -20,13 +20,15 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - payu-sdk (1.0.1):
+  - payu-sdk (1.1.0):
     - BWJSONMatcher
     - PayUIndia-PG-SDK
     - React-Core
+  - PayUIndia-CrashReporter (1.0.0)
   - PayUIndia-NetworkReachability (1.0.1)
-  - PayUIndia-PayUParams (2.1.0)
-  - PayUIndia-PG-SDK (6.4.1):
+  - PayUIndia-PayUParams (2.1.1)
+  - PayUIndia-PG-SDK (6.6.0):
+    - PayUIndia-CrashReporter (~> 1.0)
     - PayUIndia-NetworkReachability (~> 1.0)
     - PayUIndia-PayUParams (~> 2.1)
   - RCTRequired (0.63.4)
@@ -338,6 +340,7 @@ SPEC REPOS:
   trunk:
     - boost-for-react-native
     - BWJSONMatcher
+    - PayUIndia-CrashReporter
     - PayUIndia-NetworkReachability
     - PayUIndia-PayUParams
     - PayUIndia-PG-SDK
@@ -418,10 +421,11 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  payu-sdk: 2e51ef1f0c6a1655b3a18f013cdadd22004f62df
+  payu-sdk: a96ae40476f8228d327e562583741e9ee3e99065
+  PayUIndia-CrashReporter: e4e6a68b2a2f59fb826331db0799f0167f596593
   PayUIndia-NetworkReachability: 99e69781b3be99d7b713075ab7b73e6d73a153e4
-  PayUIndia-PayUParams: f74526bb45238e6c233953084987451618009b5c
-  PayUIndia-PG-SDK: 91f9bb3b437c938c9e4a4e124aafd0c25e1c55ea
+  PayUIndia-PayUParams: 1af911c15f4905c552d1f374f27b953a6dd54808
+  PayUIndia-PG-SDK: 96f0ccd31105bc278403130655f895db40c56a21
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615
