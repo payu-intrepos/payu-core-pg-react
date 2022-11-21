@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import SeamlessScreen from './SeamlessScreen';
+import LaunchScreen from './LaunchScreen';
 import APIScreen from './APIScreen.js';
 import CardsScreen from './CardsScreen';
 import PaymentMethods from './seamless/PaymentMethods';
@@ -15,8 +16,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen
+          name="LaunchScreen"
+          component={LaunchScreen}
+          options={{ title: 'LaunchScreen' }}
+        />
         <Stack.Screen
-          name="SeamlessIntegration"
+          name="SeamlessScreen"
           component={SeamlessScreen}
           options={{ title: 'Seamless Integration' }}
         />
