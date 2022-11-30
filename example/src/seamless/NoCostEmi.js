@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-
+import {initiatePayment as initPayment} from './PaymentOptions'
 import {
   Button,
   Text,
@@ -11,11 +11,12 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { getHash } from '../utils';
+import { CBParams  , getHash} from '../utils';
+
 import PayUSdk from 'payu-core-pg-react';
 
-const NoCostEmi = (props) => {
-  const { navigation } = props
+const NoCostEmi = (route,props) => {
+  const { navigation } = route
   const [cardNumber, setCardNumber] = useState('5123456789012346');
   const [expiryYear, setExpiryYear] = useState('2023');
   const [expiryMonth, setExpiryMonth] = useState('06');
@@ -24,10 +25,12 @@ const NoCostEmi = (props) => {
   const [bankCode, setBankCode] = useState('SBIB');
   const [subventionAmount, setSubventionAmount] = useState('40')
 
+
   const initiatePayment = () => {
-    const requestData = {
-      ...props,
-      key: props.merchantKey,
+    var commonParams=CBParams(route);
+    var payuSDKParams={
+      ...route,
+      key: route.merchantKey,
       paymentType: 'No Cost EMI',
       nameOnCard,
       cardNumber,
@@ -36,30 +39,26 @@ const NoCostEmi = (props) => {
       cvv,
       bankCode,
       subventionAmount
-    }
-
+    };
+    payuSDKParams["hash"]=getHash(payuSDKParams);
     PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
+      payuSDKParams,
       (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
+        console.log(response);
+        var resp=JSON.parse(response)
+        commonParams["cb_config"]={
+          url:resp.url,
+          post_data:resp.data
         }
+        resp["paymentType"]=route.paymentType;
+        resp["cbParams"]=commonParams
+        initPayment(resp,navigation)
       },
       (err) => {
         Alert.alert('Error', JSON.stringify(err));
       }
     );
-  }
-
-  const paymentResponse = (data) => {
-    console.log(data);
+    
   }
 
   return (

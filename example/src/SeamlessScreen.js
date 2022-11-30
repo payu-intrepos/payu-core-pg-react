@@ -10,11 +10,12 @@ import {
   Button,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-
+import DialogAndroid from 'react-native-dialogs';
 const SeamlessScreen = ({ navigation }) => {
-  const [merchantKey, setMerchantKey] = useState('3TnMpV');
-  const [salt, setSalt] = useState('<Please_add_test_salt_here>');
-  const [environment, setEnvironment] = useState('Production');
+  const [merchantKey, setMerchantKey] = useState('smsplus');
+  const [salt, setSalt] = useState('1b1b0');
+  // const [environment, setEnvironment] = useState('Production');
+  const [environment, setEnvironment] = useState('0');
   const [isSandbox, setisSandbox] = useState(false);
   const [userCredentials, setUserCredentials] = useState('umang:arya123');
 
@@ -56,7 +57,7 @@ const SeamlessScreen = ({ navigation }) => {
           onChangeText={setSalt}
         />
 
-         <Text>Environment(test/production)</Text>
+        <Text>Environment(test = 2 / production = 0 )</Text>
         <TextInput
           style={styles.textinput}
           placeholder="Environtment"
@@ -178,9 +179,9 @@ const SeamlessScreen = ({ navigation }) => {
             }}
           />
           <Button
-            title="Payment"
+            title="UPI Payment"
             onPress={() => {
-              navigation.navigate('PaymentMethods', {
+              navigation.navigate('UPIScreen', {
                 merchantKey,
                 salt,
                 isSandbox,
@@ -197,6 +198,44 @@ const SeamlessScreen = ({ navigation }) => {
               });
             }}
           />
+          <Button
+            title="Payment"
+            onPress={async () => {
+
+              const { selectedItem } = await DialogAndroid.showPicker('SDK Options', null, {
+                positiveText: 'OK', // this is what makes disables auto dismiss
+                negativeText: 'Cancel',
+                type: DialogAndroid.listRadio,
+                selectedId: 'apple',
+                items: [
+                    { label:'CORE PG', id:'COREPG' },
+                    { label:'CUSTOM BROWSER', id:'CUSTOMBROWSER' }
+                ]
+            });
+            if (selectedItem) {
+                // when negative button is clicked, selectedItem is not present, so it doesn't get here
+                
+                  navigation.navigate('PaymentMethods', {
+                    merchantKey,
+                    salt,
+                    isSandbox,
+                    environment,
+                    productInfo,
+                    amount,
+                    txnId,
+                    firstName,
+                    phone,
+                    email,
+                    surl,
+                    furl,
+                    userCredentials,
+                    paymentType:selectedItem.id,
+                  });
+            }
+              
+            }}
+          />
+          
         </View>
       </View>
       <View style={styles.box} />

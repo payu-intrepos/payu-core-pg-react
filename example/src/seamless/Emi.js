@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
+import {initiatePayment as initPayment} from './PaymentOptions'
+import PayUSdk from 'payu-core-pg-react';
 
 import {
   Button,
@@ -11,54 +13,55 @@ import {
   ScrollView,
 } from 'react-native';
 
-import PayUSdk from 'payu-core-pg-react';
-import { getHash } from '../utils';
+import { getHash  ,CBParams ,displayAlert , getPaytHash} from '../utils';
 
-const Emi = (props) => {
-  const { navigation } = props
+var isAttached=false
+const Emi = (route,props) => {
+  const { navigation } = route
   const [cardNumber, setCardNumber] = useState('5123456789012346');
   const [expiryYear, setExpiryYear] = useState('2023');
   const [expiryMonth, setExpiryMonth] = useState('06');
   const [cvv, setCvv] = useState('123');
   const [nameOnCard, setNameOnCard] = useState('Ram');
   const [bankCode, setBankCode] = useState('SBIB');
+  const [phoneNumber, setPhone] = useState('9123412345');
+  const [emiType, setEmiType] = useState('DC');
+
 
   const initiatePayment = () => {
-
-    const requestData = {
-      ...props,
-      key: props.merchantKey,
+    var commonParams=CBParams(route);
+    var payuSDKParams={
+      ...route,
+      key: route.merchantKey,
       paymentType: 'EMI',
       nameOnCard,
       cardNumber,
       expiryYear,
       expiryMonth,
       cvv,
-      bankCode
-    }
-
+      bankCode,
+      phone: phoneNumber
+    };
+    payuSDKParams["hash"]=getHash(payuSDKParams);
     PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
+      payuSDKParams,
       (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
+        console.log(response);
+        var resp=JSON.parse(response)
+        commonParams["cb_config"]={
+          url:resp.url,
+          post_data:resp.data
         }
+        resp["paymentType"]=route.paymentType;
+        resp["cbParams"]=commonParams
+        initPayment(resp,navigation)
+
       },
       (err) => {
         Alert.alert('Error', JSON.stringify(err));
       }
     );
-  }
-
-  const paymentResponse = (data) => {
-    console.log(data);
+    
   }
 
   return (
@@ -106,6 +109,20 @@ const Emi = (props) => {
           placeholder="Bank Code"
           value={bankCode}
           onChangeText={setBankCode}
+        />
+        <Text>Phone Number</Text>
+        <TextInput
+          style={styles.textinput}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhone}
+        />
+        <Text>EMI Type(CC/DC/Cardless)</Text>
+        <TextInput
+          style={styles.textinput}
+          placeholder="EMI Type"
+          value={emiType}
+          onChangeText={setEmiType}
         />
         <Button
           title="Pay"

@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SeamlessScreen from './SeamlessScreen';
 import LaunchScreen from './LaunchScreen';
 import APIScreen from './APIScreen.js';
+import UPIScreen from './seamless/UPI.js';
+import UPISeamless from './seamless/UPISeamless.js';
 import CardsScreen from './CardsScreen';
 import PaymentMethods from './seamless/PaymentMethods';
 import PayuPayment from './seamless/PayuPayment';
@@ -16,11 +17,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen
-          name="LaunchScreen"
-          component={LaunchScreen}
-          options={{ title: 'LaunchScreen' }}
-        />
+     
         <Stack.Screen
           name="SeamlessScreen"
           component={SeamlessScreen}
@@ -45,6 +42,16 @@ export default function App() {
           name="PayuPayment"
           component={PayuPayment}
           options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="UPISeamless"
+          component={UPISeamless}
+          options={{ title: 'UPI Samples' }}
+        />
+        <Stack.Screen
+          name="UPIScreen"
+          component={UPIScreen}
+          options={{ title: 'UPI Samples' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

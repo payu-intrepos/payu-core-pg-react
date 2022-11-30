@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { Platform } from 'react-native'
+import { NativeModules, Platform } from 'react-native'
 
 import {
   View,
@@ -30,6 +30,13 @@ import {
   PAYMENT_RELATED_DETAILS_FOR_MOBILE_SDK,
   VAS_FOR_MOBILE_SDK,
   VERIFY_PAYMENT,
+  CHECK_BALANCE,
+  GET_CONFIG,
+  ELIGIBLE_BINS_FOR_EMI,
+  DELETE_TOKENISED_USER_CARD,
+  GET_TOKENISED_CARD_DETAILS,
+  GET_TOKENISED_USER_CARD,
+  GET_MERCHANT_IBIBO_CODES,
   getEMIDetailHash,
   getCheckIsDomesticHash,
   getBinInfoHash,
@@ -38,6 +45,17 @@ import {
   getOfferHash,
   getVerifyHash,
   getVasHash,
+  getCheckBalanceHash,
+  getConfigHash,
+  getEligibleBinsForEmiHash,
+  getDeleteTokenisedUserCardHash,
+  getTokenisedUserCardHash,
+  getTokenisedCardDetailsHash,
+  getIbiboCodesHash,
+  fetchOfferDetailsHash,
+  validateOfferDetailsHash,
+  fetchAdsInformationHash,
+  saveEventImpressionHash,
 GET_USER_CARDS } from './utils';
 
 const APIScreen = ({ route }) => {
@@ -47,7 +65,6 @@ const APIScreen = ({ route }) => {
     let { merchantKey, salt, isSandbox, userCredentials, environment } = route.params;
     let requestData = {
       key: merchantKey,
-      isSandbox,
       salt,
       environment,
     };
@@ -58,9 +75,10 @@ const APIScreen = ({ route }) => {
        
         requestData = {
           ...requestData,
-          userCredentials: userCredentials,
+          key : "ol4Spy",
+          salt : "J0ZXw2z9",
+          var1 : "rahul:hooda",//User Credential  
           command: PAYMENT_RELATED_DETAILS_FOR_MOBILE_SDK,
-          hash:getWebHash(requestData)
         }
         
         
@@ -77,7 +95,6 @@ const APIScreen = ({ route }) => {
           ...requestData,
           userCredentials: userCredentials,
           command: GET_USER_CARDS,
-          hash: getUserCardHash(requestData)
         }
         
         
@@ -331,6 +348,190 @@ const APIScreen = ({ route }) => {
           hash: lookupHash
         });
         setJsonTextInputValue(JSON.stringify(response));
+      } else if (feature === 'check_balance') {
+        requestData = {
+          ...requestData,
+          key : "gtKFFx",
+          salt : "4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW",
+          var1 : "{\"sodexoSourceId\":\"src_dcda7c39-47b2-45c4-8656-38d2d67d1715\"}",
+          command: CHECK_BALANCE
+        }
+
+        const response = await PayUSdk.checkBalance({
+          ...requestData,
+          hash: getCheckBalanceHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'get_config') {
+        requestData = {
+          ...requestData,
+          var1 : "GET",
+          command: GET_CONFIG
+        }
+
+        const response = await PayUSdk.getConfig({
+          ...requestData,
+          hash: getConfigHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'eligible_bins_for_emi') {
+        requestData = {
+          ...requestData,
+          var1 : "default",
+          command: ELIGIBLE_BINS_FOR_EMI
+        }
+
+        const response = await PayUSdk.eligibleBinsForEmi({
+          ...requestData,
+          hash: getEligibleBinsForEmiHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'delete_tokenised_user_card') {
+        requestData = {
+          ...requestData,
+          key : "ol4Spy",
+          salt : "J0ZXw2z9",
+          var1 : "rahul:hooda",//User Credential
+          var2 : "d3cef31e3c9713111b23",//Card Token
+          command : "delete_payment_instrument",
+          command: DELETE_TOKENISED_USER_CARD
+        }
+
+        const response = await PayUSdk.deleteTokenisedCard({
+          ...requestData,
+          hash: getDeleteTokenisedUserCardHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'get_tokenised_card') {
+        requestData = {
+          ...requestData,
+          key : "ol4Spy",
+          salt : "J0ZXw2z9",
+          var1 : "rahul:hooda",//User Credential
+          command: GET_TOKENISED_USER_CARD
+        }
+
+        const response = await PayUSdk.getTokenisedCard({
+          ...requestData,
+          hash: getTokenisedUserCardHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'get_tokenised_card_details') {
+        requestData = {
+          ...requestData,
+          key : "ol4Spy",
+          salt : "J0ZXw2z9",
+          var1 : "rahul:hooda",//User Credential
+          var2 : "67b442491a8f50793356a6",//Card Token
+          var3 : "100",//Amount
+          var4 : "INR",//INR
+          command: GET_TOKENISED_CARD_DETAILS
+        }
+
+        const response = await PayUSdk.getTokenisedCardDetails({
+          ...requestData,
+          hash: getTokenisedCardDetailsHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'get_ibibo_codes') {
+        requestData = {
+          ...requestData,
+          var1 : "default",
+          command: GET_MERCHANT_IBIBO_CODES
+        }
+
+        const response = await PayUSdk.getIbiboCodes({
+          ...requestData,
+          hash: getIbiboCodesHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'fetch_ifsc_details') {
+        requestData = {
+          ...requestData,
+          var1:"PUNB0387200"
+        }
+
+        const response = await PayUSdk.fetchIFSCDetails({
+          ...requestData,
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'fetch_offer_details') {
+        requestData = {
+          ...requestData
+        }
+
+        const response = await PayUSdk.fetchOfferDetails({
+          ...requestData,
+          amount : 1,
+          userCredential : "rahul:hooda",
+          key : "rM5M43",
+          salt : "CMKta5xB",
+          command : "get_all_offer_details"
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'validate_offer_details') {
+        requestData = {
+          ...requestData
+        }
+
+        const response = await PayUSdk.validateOfferDetails({
+          ...requestData,
+          amount : "1000",
+          userCredential : "rahul:hooda",
+          key : "rM5M43",
+          salt : "CMKta5xB",
+          command : "validate_offer_details",
+          offerKey : "3B7aAL1X37fD",
+          email : "snooze@payu.in",
+          phoneNo : "9999999999",
+          category : "NETBANKING",
+          paymentCode : "PNBB",
+          cardTokenType : 1
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'get_ads_details') {
+        requestData = {
+          ...requestData
+        }
+
+        const response = await PayUSdk.fetchAdsInformation({
+          ...requestData,
+          hash: fetchAdsInformationHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
+
+      } else if (feature === 'post_add_impression_event') {
+        requestData = {
+          ...requestData
+        }
+
+        const response = await PayUSdk.saveEventImpression({
+          ...requestData,
+          hash: saveEventImpressionHash(requestData)
+        });
+
+        setJsonTextInputValue(JSON.stringify(response));
 
       }
     } catch (error) {
@@ -362,26 +563,73 @@ const APIScreen = ({ route }) => {
             key: 'get_checkout_details',
             title: 'Checkout details',
           },
-          {
-            key: 'check_offer_detail',
-            title: 'Check offer detail (@11311)',
-          },
+          // {
+          //   key: 'check_offer_detail',
+          //   title: 'Check offer detail (@11311)',
+          // },
           {
             key: 'verify_payment',
             title: 'Verify Payment(1628684808250payusdk)',
           },
-          {
-            key: 'check_offer_status',
-            title: 'Check Offer Status',
-          },
+          // {
+          //   key: 'check_offer_status',
+          //   title: 'Check Offer Status',
+          // },
           {
             key: 'lookup_api',
             title: 'LookUp API',
           },
+          // {
+          //   key: 'get_user_cards',
+          //   title: 'Get User Cards',
+          // }
+          { key: 'check_balance',
+          title: 'Check Balance Api (Environmment- Test)',
+          },
           {
-            key: 'get_user_cards',
-            title: 'Get User Cards',
+            key: 'get_config',
+            title: 'Get Config Api',
+          },
+          {
+            key: 'eligible_bins_for_emi',
+            title: 'EligibleBins for EMI Api',
+          },
+          {
+            key: 'delete_tokenised_user_card',
+            title: 'DeleteTokenisedCard Api',
+          },
+          {
+            key: 'get_tokenised_card',
+            title: 'GetTokenisedCard Api',
+          },
+          {
+            key: 'get_tokenised_card_details',
+            title: 'GetTokenisedCardDetails Api',
+          },
+          {
+            key: 'get_ibibo_codes',
+            title: 'GetIbiboCodes Api',
+          },
+          {
+            key: 'fetch_ifsc_details',
+            title: 'FetchIFSCDetails Api',
+          },
+          {
+            key: 'fetch_offer_details',
+            title: 'Fetch Offer Details Api',
+          },
+          {
+            key: 'validate_offer_details',
+            title: 'Validate Offer Details Api',
           }
+        // {
+        //   key: 'get_ads_details',
+        //   title: 'Fetch Ads Information Api',
+        // },
+        // {
+        //   key: 'post_add_impression_event',
+        //   title: 'Save Event ImpressionTask Api',
+        // }
         ]}
         renderItem={({ item }) => (
           <View>

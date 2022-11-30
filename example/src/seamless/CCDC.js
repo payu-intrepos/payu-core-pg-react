@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import {initiatePayment as initPayment} from './PaymentOptions'
 
 import {
   Button,
@@ -10,59 +11,116 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { getHash } from '../utils';
+import { CBParams ,displayAlert , getHash} from '../utils';
 
 import PayUSdk from 'payu-core-pg-react';
-import PayuPayment from './PayuPayment';
 
-const CCDC = (props) => {
-  const { navigation } = props
+const CCDC = (route,props) => {
+  const { navigation } = route
 
   const [cardNumber, setCardNumber] = useState('5123456789012346');
   const [expiryYear, setExpiryYear] = useState('2023');
   const [expiryMonth, setExpiryMonth] = useState('06');
   const [cvv, setCvv] = useState('123');
   const [nameOnCard, setNameOnCard] = useState('Ram');
+  const [cardToken, setCardToken] = useState('22984b5e08575d2b2a40c8');
+  const [isSodexo, setSodexo] = useState('No');
 
-  const initializePayment = () => {
-    const requestData = {
-      ...props,
-      key: props.merchantKey,
-      paymentType: 'Credit / Debit Cards',
+  const initiatePayment = () => {
+    var commonParams=CBParams(route);
+    var payuSDKParams={
+      ...route,
+      key: route.merchantKey,
       nameOnCard,
-      cardNumber,
-      expiryYear,
-      expiryMonth,
       cvv,
-    }
+      udf1: "",
+      udf2: "",
+      udf3: "",
+      udf4: "",
+      udf5: ""
+    };
 
-    PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
-      (response) => {
-        const responseData = JSON.parse(response);
-
-        // const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
-        }
-
-      },
-      (err) => {
-        Alert.alert('Error', JSON.stringify(err));
+    if(isSodexo==='No')
+    {
+      if(cardToken===''){
+        PayUSdk.makePayment(
+          {
+            ...payuSDKParams,
+            cardNumber,
+            expiryYear,
+            expiryMonth,
+            paymentType: "Credit / Debit Cards",
+            hash: getHash(payuSDKParams)
+          },
+          (response) => {
+            var resp=JSON.parse(response)
+       
+            commonParams["cb_config"]={
+              url:resp.url,
+              post_data:resp.data
+            }
+            resp["paymentType"]=route.paymentType;
+            resp["cbParams"]=commonParams
+            initPayment(resp,navigation)
+          },
+          (err) => {
+            Alert.alert('Error', JSON.stringify(err));
+          }
+        );
       }
-    );
+      else{
+        PayUSdk.makePayment(
+          {
+            ...payuSDKParams,
+            cardToken:cardToken,
+            paymentType: "Credit / Debit Cards",
+            hash: getHash(payuSDKParams)
+          },
+          (response) => {
+            var resp=JSON.parse(response)
+       
+            commonParams["cb_config"]={
+              url:resp.url,
+              post_data:resp.data
+            }
+            resp["paymentType"]=route.paymentType;
+            resp["cbParams"]=commonParams
+            initPayment(resp,navigation)
+          },
+          (err) => {
+            Alert.alert('Error', JSON.stringify(err));
+          }
+        );
+        console.log(payuSDKParams);
+      }
+    }
+    else
+    {
+      PayUSdk.makePayment(
+        {
+          ...payuSDKParams,
+          paymentType: 'Sodexo',
+          hash: getHash(payuSDKParams)
+        },
+        (response) => {
+          console.log(response);
+          var resp=JSON.parse(response)
+          commonParams["cb_config"]={
+            url:resp.url,
+            post_data:resp.data
+          }
+          resp["paymentType"]=route.paymentType;
+          resp["cbParams"]=commonParams
+          initPayment(resp,navigation)
+        },
+        (err) => {
+          Alert.alert('Error', JSON.stringify(err));
+        }
+      );
+    }
+    
   }
-
-  const paymentResponse = (data) => {
-    console.log(data);
-  }
-
+ 
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -102,10 +160,24 @@ const CCDC = (props) => {
           value={nameOnCard}
           onChangeText={setNameOnCard}
         />
+        <Text>Stored Card Token</Text>
+        <TextInput
+          style={styles.textinput}
+          placeholder="StoredCardToken"
+          value={cardToken}
+          onChangeText={setCardToken}
+        />
+        <Text>Is Sodexo Card</Text>
+        <TextInput
+          style={styles.textinput}
+          placeholder="Is Sodexo Card"
+          value={isSodexo}
+          onChangeText={setSodexo}
+        />
         <Button
           title="Pay"
           onPress={() => {
-            initializePayment()
+            initiatePayment()
           }}
         />
       </View>

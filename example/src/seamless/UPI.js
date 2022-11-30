@@ -2,64 +2,86 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 
 import { getHash } from '../utils';
-import PayUSdk from 'payu-core-pg-react';
-
-const UPI = (props) => {
+import { commonPaymentParam ,getPaymentHash,getVPAHash,displayAlert} from '../utils';
+import  PayUUPI  from 'payu-upi-react';
+const UPI = (routeData,props) => {
   const { navigation } = props
   const [vpa, setVpa] = useState('');
-  const initiatePayment = () => {
-
+var route=routeData;
+  if(routeData.route != undefined && routeData.route.params !=undefined){
+    route=routeData.route.params;
+  }
+  console.log("navigation====>"+JSON.stringify(route));
+  const initiatePayment = (mode,packageName="null") => {
+    var commonParams=commonPaymentParam(route);
+    commonParams["hashes"]["payment"]=getPaymentHash(commonParams,route.salt);
+    commonParams["payment_mode"]=mode;
+    if(mode=="upi"){
+      commonParams["vpa"]=vpa;
+    }
+    
+    if(packageName != "null"){
+      commonParams["package_name"]=packageName;
+    }
+    
     const requestData = {
-      ...props,
-      key: props.merchantKey,
-      paymentType: 'UPI',
-      vpa
+      payu_payment_params: commonParams,
     }
 
-    PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
+  console.log(requestData);
+   PayUUPI.makeUPIPayment(requestData,
+      (error) => {
+        console.log("-----------Error "+mode+"---------");
+        console.log(error);
+       
+        displayAlert('Error '+mode, JSON.stringify(error));
+        console.log("------------------------------------------");
+
       },
-      (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
-        }
-      },
-      (err) => {
-        Alert.alert('Error', JSON.stringify(err));
+      (params) => {
+        console.log("-----------Success "+mode+"---------");
+        console.log(params);
+      
+        displayAlert('Success '+mode, JSON.stringify(params));
+        console.log("------------------------------------------");
       }
     );
   }
 
-  const walletMakePayment = (paymentType, bankCode = '') => {
+  const validateVPA = () => {
+    console.log('Button Tapped validate VPA');
+   
+    var commonParams = commonPaymentParam(route);
+    commonParams["vpa"]=vpa;
+    commonParams["hashes"]["payment"]=getPaymentHash(commonParams,route.salt);
+    commonParams["hashes"]["validate_vpa"]=getVPAHash(commonParams,route.salt);
     const requestData = {
-      ...props,
-      key: props.merchantKey,
-      paymentType: paymentType,
-      bankCode : bankCode
+      payu_payment_params: commonParams,
     }
+    PayUUPI.validateVPA(
+      requestData,
+      (error) => {
+        console.log("-----------Error validateVPA---------");
+        console.log(error);
+        console.log("-------------------------------------");
+        displayAlert('Error validateVPA', JSON.stringify(error));
+      },
+      (params) => {
+        console.log("-----------Success validateVPA---------");
+        console.log(params);
+        console.log("---------------------------------------");
+        displayAlert('Success validateVPA', JSON.stringify(params));
+      }
+    );
+  }
 
-    PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
-      (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
-        }
-      },
-      (err) => {
-        Alert.alert('Error', JSON.stringify(err));
+  const intentApps = () => {
+    console.log('Button Tapped IntentApps');
+    PayUUPI.intentApps((intentApps) => {
+        console.log("-----------Success intentApps---------");
+        console.log(JSON.stringify(intentApps));
+        console.log("---------------------------------------");
+        displayAlert('Success intentApps', JSON.stringify(intentApps));
       }
     );
   }
@@ -72,23 +94,27 @@ const UPI = (props) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.walletItem, { backgroundColor: '#3A81F1' }]}
-        onPress={() => walletMakePayment('UPI', 'Tez')}
+        onPress={() => initiatePayment('INTENT', 'com.google.android.apps.nbu.paisa.user')}
       >
         <Text style={styles.walletText}>Google Pay</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.walletItem, { backgroundColor: 'black' }]}
-        onPress={() => walletMakePayment('Twid','Twid')}
-      >
-        <Text style={styles.walletText}>TwidPay</Text>
-      </TouchableOpacity>
+     
       <TouchableOpacity
         style={[styles.walletItem, { backgroundColor: '#6739b7' }]}
-        onPress={() => walletMakePayment('Cash Card', 'phonepe')}
+        onPress={() => initiatePayment('INTENT', 'com.phonepe.app')}
       >
         <Text style={styles.walletText}>PhonePe</Text>
       </TouchableOpacity>
 
+
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: 'black' }]}
+        onPress={() => intentApps()}
+      >
+        <Text style={styles.walletText}>Get UPI Apps List</Text>
+      </TouchableOpacity>
+
+      
       <Text style={styles.title}>Please Enter VPA</Text>
       <TextInput
         style={styles.textinput}
@@ -97,9 +123,24 @@ const UPI = (props) => {
         onChangeText={setVpa}
       />
       <Button
-        title="Pay"
+        style={[styles.walletItem, { backgroundColor: 'green' }]}
+        onPress={() => validateVPA()}
+        title="Validate VPA"
+      >
+        
+      </Button>
+      <Text ></Text>
+      <Button
+        title="Pay via Intent"
         onPress={() => {
-          initiatePayment()
+          initiatePayment("INTENT",null)
+        }}
+      />
+      <Text ></Text>
+       <Button
+        title="Pay via collect"
+        onPress={() => {
+          initiatePayment("upi")
         }}
       />
     </View>

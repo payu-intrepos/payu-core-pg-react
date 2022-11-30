@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import CCDC from './CCDC';
 import NetBanking from './NetBanking';
-import UPI from './UPI';
+import UPISeamless from './UPISeamless';
 import Emi from './Emi';
 import NoCostEmi from './NoCostEmi';
 import CashCard from './CashCard';
@@ -32,7 +32,9 @@ const PaymentMethods = ({ route, navigation }) => {
         name="NetBanking"
         children={() => <NetBanking {...data} />}
       />
-      <Tab.Screen name="UPI" children={() => <UPI {...data} />} />
+      <Tab.Screen 
+      name="UPI" 
+      children={() => <UPISeamless {...data} />} />
       <Tab.Screen
         name="Wallets"
         children={() => <Wallets {...data} />}

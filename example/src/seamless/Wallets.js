@@ -1,57 +1,109 @@
 import React from 'react';
-import { View, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
-
-import { getHash } from '../utils';
+import { View, StyleSheet, Text, Alert, TouchableOpacity ,DeviceEventEmitter} from 'react-native';
+import { CBParams ,getHash } from '../utils';
 import PayUSdk from 'payu-core-pg-react';
+import {initiatePayment as initPayment} from './PaymentOptions'
 
-const Wallets = (props) => {
-  const { navigation } = props
+const Wallets = (route,props) => {
+  const { navigation } = route
 
-  const walletMakePayment = (paymentType) => {
-
-    const requestData = {
-      ...props,
-      key: props.merchantKey,
-      paymentType,
-    }
-
+  const walletMakePayment = (bank) => {
+    var commonParams=CBParams(route);
+    var payuSDKParams={
+      ...route,
+      key: route.merchantKey,
+      bankCode:bank,
+      paymentType:"Cash Card"
+    };
+    console.log(payuSDKParams);
+    payuSDKParams["hash"]=getHash(payuSDKParams);
+    
     PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
+      payuSDKParams,
       (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
+        var resp=JSON.parse(response)
+       
+        commonParams["cb_config"]={
+          url:resp.url,
+          post_data:resp.data
         }
+        resp["paymentType"]=route.paymentType;
+        resp["cbParams"]=commonParams
+        initPayment(resp,navigation)
       },
       (err) => {
         Alert.alert('Error', JSON.stringify(err));
       }
     );
+    
   }
-
-  const paymentResponse = (data) => {
-    console.log(data);
-  }
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.walletItem, { backgroundColor: '#96b720' }]}
-        onPress={() => walletMakePayment('PayU Money')}
+        onPress={() => walletMakePayment('AMON')}
       >
-        <Text style={styles.walletText}>PayU Money</Text>
+        <Text style={styles.walletText}>Airtel Money</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.walletItem, { backgroundColor: '#e2315b' }]}
-        onPress={() => walletMakePayment('LazyPay')}
+        onPress={() => initiatePayment('AMZPAY')}
       >
-        <Text style={styles.walletText}>LazyPay</Text>
+        <Text style={styles.walletText}>Amazon Pay</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#96b720' }]}
+        onPress={() => walletMakePayment('CITRUSW')}
+      >
+        <Text style={styles.walletText}>Citrus Wallet</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#e2315b' }]}
+        onPress={() => walletMakePayment('FREC')}
+      >
+        <Text style={styles.walletText}>FreeCharge PayLater|UPI|Wallet</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#96b720' }]}
+        onPress={() => walletMakePayment('JIOM')}
+      >
+        <Text style={styles.walletText}>Jio Money</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#e2315b' }]}
+        onPress={() => walletMakePayment('MOBIKWIK')}
+      >
+        <Text style={styles.walletText}>Mobikwik Wallet</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#96b720' }]}
+        onPress={() => walletMakePayment('OLAM')}
+      >
+        <Text style={styles.walletText}>OlaMoney</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#e2315b' }]}
+        onPress={() => walletMakePayment('TWID')}
+      >
+        <Text style={styles.walletText}>Pay with Rewards</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#96b720' }]}
+        onPress={() => walletMakePayment('PAYTM')}
+      >
+        <Text style={styles.walletText}>Paytm</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#e2315b' }]}
+        onPress={() => walletMakePayment('PHONEPE')}
+      >
+        <Text style={styles.walletText}>PhonePe</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.walletItem, { backgroundColor: '#96b720' }]}
+        onPress={() => walletMakePayment('PAYZ')}
+      >
+        <Text style={styles.walletText}>HDFC Bank - PayZapp</Text>
       </TouchableOpacity>
     </View>
   );

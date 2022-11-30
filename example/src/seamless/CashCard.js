@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-
+import { CBParams } from '../utils';
 import {
   Button,
   Text,
@@ -9,40 +9,45 @@ import {
   View,
   Alert,
   ScrollView,
+  NativeModules,
 } from 'react-native';
 
 import PayUSdk from 'payu-core-pg-react';
 import { getHash } from '../utils';
-
-const CashCard = (props) => {
-  const { navigation } = props;
+import {initiatePayment as initPayment} from './PaymentOptions'
+const CashCard = (route,props) => {
+  const { navigation } = route;
   const [bankCode, setBankCode] = useState('SBIB');
 
   const initiatePayment = () => {
-    
+    var commonParams=CBParams(route);
     const requestData = {
-      ...props,
-      key: props.merchantKey,
-      paymentType: 'Cash Card',
-      SURL: props.surl,
-      FURL: props.furl,
-      transactionID: props.txnId,
-      bankCode
+      ...route,
+      key: route.merchantKey,
+      bankCode,
+      paymentType:"Cash Card",
+      udf1: "",
+      udf2: "",
+      udf3: "",
+      udf4: "",
+      udf5: ""
     }
 
+    requestData["hash"]=getHash(requestData);
+
     PayUSdk.makePayment(
-      {
-        ...requestData,
-        hash: getHash(requestData)
-      },
+      requestData
+      ,
       (response) => {
-        const responseData = JSON.parse(response)
-        if (responseData?.data) {
-          navigation.navigate('PayuPayment', {
-            request: responseData,
-            onPaymentResponse: (data) => paymentResponse(data)
-          })
+        var resp=JSON.parse(response)
+       
+        commonParams["cb_config"]={
+          url:resp.url,
+          post_data:resp.data
         }
+        resp["paymentType"]=route.paymentType;
+        resp["cbParams"]=commonParams
+        initPayment(resp,navigation)
       },
       (err) => {
         Alert.alert('Error', JSON.stringify(err));
@@ -50,9 +55,7 @@ const CashCard = (props) => {
     );
   }
 
-  const paymentResponse = (data) => {
-    console.log(data);
-  }
+
 
   return (
     <ScrollView>

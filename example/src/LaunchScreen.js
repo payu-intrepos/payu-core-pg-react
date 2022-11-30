@@ -30,7 +30,7 @@ const LaunchScreen = ({ navigation }) => {
           <Button
             title="UPI"
             onPress={() => {
-              navigation.navigate('CardsScreen');
+              navigation.navigate('SeamlessScreen');
             }}
           />
           {/* Todo: Custom Browser Demo App implementation */}
