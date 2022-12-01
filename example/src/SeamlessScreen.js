@@ -199,22 +199,8 @@ const SeamlessScreen = ({ navigation }) => {
             }}
           />
           <Button
-            title="Payment"
+            title="CORE-PG"
             onPress={async () => {
-
-              const { selectedItem } = await DialogAndroid.showPicker('SDK Options', null, {
-                positiveText: 'OK', // this is what makes disables auto dismiss
-                negativeText: 'Cancel',
-                type: DialogAndroid.listRadio,
-                selectedId: 'apple',
-                items: [
-                    { label:'CORE PG', id:'COREPG' },
-                    { label:'CUSTOM BROWSER', id:'CUSTOMBROWSER' }
-                ]
-            });
-            if (selectedItem) {
-                // when negative button is clicked, selectedItem is not present, so it doesn't get here
-                
                   navigation.navigate('PaymentMethods', {
                     merchantKey,
                     salt,
@@ -229,13 +215,31 @@ const SeamlessScreen = ({ navigation }) => {
                     surl,
                     furl,
                     userCredentials,
-                    paymentType:selectedItem.id,
+                    paymentType:"COREPG",
                   });
-            }
-              
             }}
           />
-          
+          <Button
+            title="CB"
+            onPress={async () => {
+                  navigation.navigate('PaymentMethods', {
+                    merchantKey,
+                    salt,
+                    isSandbox,
+                    environment,
+                    productInfo,
+                    amount,
+                    txnId,
+                    firstName,
+                    phone,
+                    email,
+                    surl,
+                    furl,
+                    userCredentials,
+                    paymentType:"CUSTOMBROWSER",
+                  });
+            }}
+          />
         </View>
       </View>
       <View style={styles.box} />

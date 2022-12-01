@@ -22,6 +22,7 @@ var route=routeData;
     
     if(packageName != "null"){
       commonParams["package_name"]=packageName;
+      commonParams["intent_app"]="gpay";
     }
     
     const requestData = {
@@ -99,12 +100,12 @@ var route=routeData;
         <Text style={styles.walletText}>Google Pay</Text>
       </TouchableOpacity>
      
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[styles.walletItem, { backgroundColor: '#6739b7' }]}
         onPress={() => initiatePayment('INTENT', 'com.phonepe.app')}
       >
         <Text style={styles.walletText}>PhonePe</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
 
       <TouchableOpacity

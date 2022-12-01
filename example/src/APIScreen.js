@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
-import { NativeModules, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react';
 
 import {
   View,
@@ -11,10 +10,13 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  NativeModules,
+  NativeEventEmitter,
+  Platform
 } from 'react-native';
 import moment from 'moment'
-
-import PayUSdk from 'payu-core-pg-react';
+import CryptoJS from "react-native-crypto-js";
+import { JSHmac, CONSTANTS } from "react-native-hash";
 import {
   API_GET_EMI_AMOUNT_ACCORDING_INTEREST,
   CHECK_IS_DOMESTIC,
@@ -57,6 +59,8 @@ import {
   fetchAdsInformationHash,
   saveEventImpressionHash,
 GET_USER_CARDS } from './utils';
+
+const { PayUSdk } = NativeModules;
 
 const APIScreen = ({ route }) => {
   const [jsonTextInputValue,
@@ -138,7 +142,7 @@ const APIScreen = ({ route }) => {
         requestData = {
           ...requestData,
           isSIInfo: '1',
-          cardNumber: '555555',
+          cardNumber: '555676',
           command: GET_BIN_INFO
         }
 
@@ -192,10 +196,16 @@ const APIScreen = ({ route }) => {
           {"getExtendedPaymentDetails":true,
           "getTaxSpecification":true,
           "checkDownStatus":true,
-          "getAdditionalCharges":true},
+          "getAdditionalCharges":true,
+          "getOfferDetails":true,
+          "getPgIdForEachOption":true,
+          "checkCustomerEligibility":true,
+          "getMerchantDetails":true,
+          "getPaymentDetailsWithExtraFields":true,
+          "getSdkDetails":true},
           "requestId":"211219214632",
           "customerDetails":{"mobile":"9876543210"},
-          "transactionDetails":{"amount":"5000"}
+          "transactionDetails":{"amount":"1"}
         }),
           command: GET_CHECKOUT_DETAILS
         }
@@ -321,7 +331,7 @@ const APIScreen = ({ route }) => {
         setJsonTextInputValue(JSON.stringify(response));
 
       } else if (feature === 'lookup_api') {
-        const merchantOrderId = "OBE-JU89-13151-1100900221";
+        const merchantOrderId = "OBE-JU89-13151-11009002";
         const currency = "INR";
         const baseAmount = "10000"
 
@@ -348,12 +358,11 @@ const APIScreen = ({ route }) => {
           hash: lookupHash
         });
         setJsonTextInputValue(JSON.stringify(response));
+
       } else if (feature === 'check_balance') {
         requestData = {
           ...requestData,
-          key : "gtKFFx",
-          salt : "4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW",
-          var1 : "{\"sodexoSourceId\":\"src_dcda7c39-47b2-45c4-8656-38d2d67d1715\"}",
+          var1 : "{\"sodexoSourceId\":\"src_5521693f-56b6-4102-8af7-cf716610f04a\"}",
           command: CHECK_BALANCE
         }
 
@@ -395,10 +404,10 @@ const APIScreen = ({ route }) => {
       } else if (feature === 'delete_tokenised_user_card') {
         requestData = {
           ...requestData,
-          key : "ol4Spy",
-          salt : "J0ZXw2z9",
-          var1 : "rahul:hooda",//User Credential
-          var2 : "d3cef31e3c9713111b23",//Card Token
+          var1 : "rahul:hooda",// User Credential
+          var2 : "d3cef31e3c9713111b23",// Card Token
+          var3 : "",// Network token
+          var4 : "",// Issuer Token
           command : "delete_payment_instrument",
           command: DELETE_TOKENISED_USER_CARD
         }
@@ -413,9 +422,7 @@ const APIScreen = ({ route }) => {
       } else if (feature === 'get_tokenised_card') {
         requestData = {
           ...requestData,
-          key : "ol4Spy",
-          salt : "J0ZXw2z9",
-          var1 : "rahul:hooda",//User Credential
+          var1 : "rahul:hooda", //User Credential
           command: GET_TOKENISED_USER_CARD
         }
 
@@ -429,10 +436,8 @@ const APIScreen = ({ route }) => {
       } else if (feature === 'get_tokenised_card_details') {
         requestData = {
           ...requestData,
-          key : "ol4Spy",
-          salt : "J0ZXw2z9",
           var1 : "rahul:hooda",//User Credential
-          var2 : "67b442491a8f50793356a6",//Card Token
+          var2 : "22984b5e08575d2b2a40c8",//Card Token
           var3 : "100",//Amount
           var4 : "INR",//INR
           command: GET_TOKENISED_CARD_DETAILS
@@ -472,39 +477,37 @@ const APIScreen = ({ route }) => {
         setJsonTextInputValue(JSON.stringify(response));
 
       } else if (feature === 'fetch_offer_details') {
-        requestData = {
-          ...requestData
-        }
-
         const response = await PayUSdk.fetchOfferDetails({
           ...requestData,
-          amount : 1,
-          userCredential : "rahul:hooda",
-          key : "rM5M43",
-          salt : "CMKta5xB",
+          amount : "1000",
+          userToken : "anshul_bajpai_token",
           command : "get_all_offer_details"
         });
 
         setJsonTextInputValue(JSON.stringify(response));
 
       } else if (feature === 'validate_offer_details') {
-        requestData = {
-          ...requestData
-        }
-
         const response = await PayUSdk.validateOfferDetails({
           ...requestData,
-          amount : "1000",
-          userCredential : "rahul:hooda",
-          key : "rM5M43",
-          salt : "CMKta5xB",
           command : "validate_offer_details",
-          offerKey : "3B7aAL1X37fD",
-          email : "snooze@payu.in",
-          phoneNo : "9999999999",
-          category : "NETBANKING",
-          paymentCode : "PNBB",
-          cardTokenType : 1
+          amount : "1000",
+          clientId : "",
+          offerKey : ["3B7aAL1X37fD"],
+          paymentDetail: {
+            cardNumber: "",
+            cardHash: "",
+            cardMask: "",
+            category: "NETBANKING",
+            paymentCode: "PNBB",
+            vpa: ""
+          },
+          paymentId: "",
+          platformId: "",
+          userDetail: {
+            email : "snooze@payu.in",
+            phoneNo : "9999999999", 
+            userToken : "anshul_bajpai_token" 
+          }
         });
 
         setJsonTextInputValue(JSON.stringify(response));
@@ -540,6 +543,31 @@ const APIScreen = ({ route }) => {
       Alert.alert('Error Occurened in Js Please check Logs.');
     }
   };
+    // Register eventEmitters here
+    useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(PayUSdk);
+    payUGenerateHash = eventEmitter.addListener('generateHash', generateHash);
+    //Unregister eventEmitters here
+    return () => {
+        payUGenerateHash.remove();
+  }
+  })
+
+    generateHash = (e) => {
+      console.log(e.hashName);
+      console.log(e.hashString);
+      sendBackHash(e.hashName, e.hashString);
+  }
+
+       //Used to send back hash generated to SDK
+    sendBackHash = (hashName, hashData) => {        
+        JSHmac(hashData, route.params.salt, CONSTANTS.HmacAlgorithms.HmacSHA256)
+        .then(hash => 
+          PayUSdk.hashGenerated( { [hashName]:CryptoJS.enc.Base64.stringify(CryptoJS.enc.Hex.parse(hash)) })
+          )
+         .catch(e => console.log(e));
+    };
+
   return (
     <View style={styles.container}>
       <FlatList
