@@ -12,14 +12,14 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.6)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - payu-cb (1.1.0):
+  - payu-cb (1.1.1):
     - PayUIndia-Custom-Browser (~> 9.2)
     - React-Core
-  - payu-sdk (1.2.0):
+  - payu-sdk (1.2.1):
     - BWJSONMatcher
     - PayUIndia-PG-SDK (~> 8.8)
     - React-Core
-  - payu-upi (1.1.0):
+  - payu-upi (1.1.1):
     - PayUIndia-UPICore (~> 7.1)
     - React-Core
   - PayUIndia-Analytics (3.0.0):
@@ -250,9 +250,9 @@ PODS:
     - glog
   - react-native-hash (3.0.3):
     - React
-  - react-native-safe-area-context (3.3.2):
+  - react-native-safe-area-context (3.4.1):
     - React-Core
-  - react-native-webview (11.14.3):
+  - react-native-webview (11.25.0):
     - React-Core
   - React-perflogger (0.70.6)
   - React-RCTActionSheet (0.70.6):
@@ -324,7 +324,7 @@ PODS:
     - React
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNReanimated (2.13.0):
+  - RNReanimated (2.8.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -351,7 +351,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.9.0):
+  - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
   - Yoga (1.14.0)
@@ -509,9 +509,9 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: dd1186fd05255e3457baa2f4ca65e94c2cd1e3ac
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  payu-cb: 5b3b329035b6c2357536f436ea994fa9fbab61db
-  payu-sdk: 8d32a6a17e166a800b135df12b54fe7e4dad4a12
-  payu-upi: fe5472f56334fc1e3a4fdc9070f4b8b142e85765
+  payu-cb: 6fa5af75cd2baff9f87736e758cdd7e1de07990e
+  payu-sdk: d3a153cdf920d7ed8a8a1ab634e25b2801944d42
+  payu-upi: 45ebd7e084bb888a0e0a47a087dc4d6a6a640924
   PayUIndia-Analytics: a23768b29283ef781783f38a99c1cf2235020d58
   PayUIndia-CrashReporter: 597caf134e85f9b3bde7d2045cae2def1b86c544
   PayUIndia-Custom-Browser: a59cd7aa369664e1b6d212c1124d78ee2c5e98bc
@@ -536,8 +536,8 @@ SPEC CHECKSUMS:
   React-jsinspector: 60769e5a0a6d4b32294a2456077f59d0266f9a8b
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
   react-native-hash: 4664516df1834e1293b30e711c63f61f7f801b6a
-  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
-  react-native-webview: b83cf1aa6b4453fe53ffcc5896c36cdf37f0383f
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-webview: a71da846ed2e9085440e1d6659c04e285528834b
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -552,10 +552,10 @@ SPEC CHECKSUMS:
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNReanimated: ce445c233a6ff5600223484a88ad5704945d972a
-  RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
+  RNReanimated: 141c77b0aea69a9ae44041d8dd9f07ae33340bb6
+  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
 
-PODFILE CHECKSUM: d29a47b4df1d81559dd12f5831c4df926f42c868
+PODFILE CHECKSUM: 5d9d26036fcdeea1461ce28c9526ab59022bf117
 
 COCOAPODS: 1.11.3
