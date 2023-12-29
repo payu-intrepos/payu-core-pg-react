@@ -26,11 +26,11 @@ const SeamlessScreen = ({ navigation }) => {
   const [phone, setPhone] = useState('9444444444');
   const [email, setEmail] = useState('info@webinfomart.com');
   const [surl, setSurl] = useState(
-    'https://payu-react.herokuapp.com/index.php'
+    'https://cbjs.payu.in/sdk/success'
   );
 
   const [furl, setFurl] = useState(
-    'https://payu-react.herokuapp.com/index.php'
+    'https://cbjs.payu.in/sdk/failure'
   );
 
   const isVisible = useIsFocused();
